@@ -1,3 +1,5 @@
+require("pg")
+
 class Bounty
 
 attr_accessor :name, :bounty_value, :last_known_location, :favourite_weapon
@@ -9,3 +11,24 @@ def initialize(options)
   @last_known_location = options["last_known_location"]
   @favourite_weapon = options["favourite_weapon"]
 end
+
+  def save()
+    db = PG.connect({
+    dbname: "bounty_hunter",
+    host: "localhost"
+    })
+    sql = "INSERT INTO bountys
+    (name,
+    bounty_value,
+    last_known_location,
+    favourite_weapon)
+    VALUES
+      ($1, $2, $3, $4) RETURNING id"
+      values = [@name, @bounty_value, @last_known_location, @favourite_weapon]
+      db.prepare("save", sql)
+      @id = db.exec_prepared("save", values)[0]["id"].to_i
+      db.close()
+    end
+
+
+  end
