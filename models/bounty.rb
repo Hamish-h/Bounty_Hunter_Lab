@@ -30,5 +30,22 @@ end
       db.close()
     end
 
+    def update()
+      db = PG.connect({
+      dbname: "bounty_hunter",
+      host: "localhost"
+      })
+      sql = "UPDATE bountys
+      SET (name,
+      bounty_value,
+      last_known_location,
+      favourite_weapon) = ($1, $2, $3, $4) WHERE id = $5"
+      values = [@name, @bounty_value, @last_known_location, @favourite_weapon]
+      db.prepare("update", sql)
+      db.exec_prepared("update", values)
+      db.close()
+    end
+
+
 
   end
